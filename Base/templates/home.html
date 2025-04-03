@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <title>Keshav's Portfolio</title>  
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">  
+</head>  
+<body> 
+    
+    <header class="top-nav">  
+        <nav>  
+            <ul>  
+                <li><a href="#about">About</a></li>  
+                <li><a href="#skills">Skills</a></li>  
+                <li><a href="#projects">Projects</a></li>  
+                <li><a href="#education">Education</a></li>  
+                <li><a href="#experience">Experience</a></li>  
+                <li><a href="#achievements">Achievements</a></li>  
+                <li><a href="#contact">Contact</a></li>  
+            </ul>  
+        </nav>  
+    </header>  
+     
+
+    
+    <div class="container">  
+
+        <div class="section about-section" id="about">  
+            <div class="about-content">  
+                <div class="about-text">  
+                    <h1>Keshav</h1>  
+                    <div class="contact-links">  
+                        <p>Email: <a href="mailto:gkeshav959@gmail.com">gkeshav959@gmail.com</a></p>  
+                        <p>Email: <a href="mailto:keshav.ug22@nsut.ac.in">keshav.ug22@nsut.ac.in</a></p>  
+                        <p>Mobile: +91-9650234089</p>  
+                        <p><a href="https://www.linkedin.com/in/keshav-goyal-251b6432a/">LinkedIn</a></p>  
+                        <p><a href="https://github.com/kesal-us">GitHub</a></p> 
+                        <p><a href="https://leetcode.com/u/tckes9340/">Leetcode</a></p>  
+                        <a href="{% static 'pdf/Resume.pdf' %}" download class="resume-button">Download Resume</a>  
+                    </div>  
+                </div>  
+                <div class="profile-image">  
+                    <img src="{% static 'images/5.jpg' %}" alt="Keshav's Photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">  
+                    <div class="alt-text">Keshav's Photo</div>  
+                </div>  
+                  
+            </div>  
+        </div>  
+        
+    
+        <div class="section" id="skills">  
+            <h2>Skills Summary</h2>  
+            <div class="skills">  
+                {% for category, items in skills.items %}  
+                    <h3>{{ category }}</h3>  
+                    <div class="skill-list">  
+                        {% for skill in items %}  
+                            <span class="skill-box">{{ skill }}</span>  
+                        {% endfor %}  
+                    </div>  
+                {% endfor %}  
+            </div>  
+        </div>          
+          
+    
+        <div class="section" id="projects">  
+            <h2>Projects</h2>  
+            {% for project in projects %}  
+                <div class="project-card">  
+                    <h3>{{ project.title }}</h3>  
+                    <p>{{ project.description }}</p>  
+                    <p><strong>Technologies:</strong> {{ project.technologies }}</p>  
+                    {% if project.project_link %}
+                    <a href={{project.project_link}} class="link-button">Project Link</a>
+                    {% endif %}
+                    {% if project.github_link %}
+                    <a href={{project.github_link}} class="link-button">Code Link</a>
+                    {% endif %}
+                </div>  
+            {% endfor %}  
+        </div>  
+    
+        <div class="section" id="education">  
+            <h2>Education</h2>  
+            {% for edu in education %}  
+                <h3>{{ edu.institution }},{{ edu.location }}</h3>  
+                <p>{{ edu.degree }}:{{ edu.field }} ({{ edu.start_date }}-{{ edu.end_date }})</p> 
+                <p></p> 
+                <p>GPA/Percentage: {{ edu.gpa_or_percentage }}</p>  
+            {% endfor %}  
+        </div>  
+    
+        <div class="section" id="experience">  
+            <h2>Experience</h2>  
+            <div class="experience-container">  
+                {% for exp in experience %}  
+                    <div class="experience-card">  
+                        <div class="exp-header">  
+                            <h3>{{ exp.title }}</h3>  
+                            <h4>{{ exp.company }}, {{ exp.location }}</h4>  
+                            <p class="exp-duration">{{ exp.start_date }} - {{ exp.end_date }}</p>  
+                              
+                        </div>  
+                        <div class="exp-description">  
+                            <p>{{ exp.description }}</p>  
+                        </div>  
+                    </div>  
+                {% endfor %}  
+            </div>  
+        </div>  
+        
+    
+        <div class="section" id="achievements">  
+            <h2>Achievements</h2>  
+            <div class="achievement-container">  
+                {% for ach in achievement %}  
+                    <div class="achievement-card">  
+                        <p>{{ ach.description }}</p>  
+                        {% if ach.ac_link %}  
+                            <a href="{{ ach.ac_link }}" class="link-button" target="_blank">View More</a>  
+                        {% endif %}  
+                    </div>  
+                {% endfor %}  
+            </div>  
+        </div>  
+            
+        <div class="section contact-section" id="contact">
+            <h2>Contact Me</h2>
+            <p>Have a project in mind or want to collaborate? Reach out to me!</p>
+            <a href="mailto:gkeshav959@gmail.com" class="contact-button">Email Me</a>
+
+            <h3>Send Feedback</h3>
+            <form id="feedbackForm" method="POST" action="{% url 'contact' %}">
+                {% csrf_token %}
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required><br><br>
+            
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required><br><br>
+            
+                <label for="message">Message:</label><br>
+                <textarea id="message" name="message" rows="4" required></textarea><br><br>
+            
+                <button type="submit">Submit</button>
+            </form>
+            
+            <script>
+                document.getElementById("feedbackForm").addEventListener("submit", function(event) {
+                    event.preventDefault(); // Prevent default form submission
+            
+                    let formData = new FormData(this);
+            
+                    fetch("{% url 'contact' %}", {
+                        method: "POST",
+                        body: formData,
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message); // Show success or error message
+                        if (data.success) {
+                            document.getElementById("feedbackForm").reset(); // Clear form on success
+                        }
+                    })
+                    .catch(error => console.error("Error:", error));
+                });
+            </script>
+            
+
+
+
+        </div>
+        
+        
+        
+    
+    </div>  
+    
+</body>  
+</html>  
